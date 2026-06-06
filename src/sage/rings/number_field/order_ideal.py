@@ -259,6 +259,24 @@ class NumberFieldOrderIdeal_generic(Ideal_generic):
         """
         return self.free_module().index_in(self.ring().free_module())
 
+    def factor(self):
+        if all(x.is_zero() for x in self.gens()):
+            raise ValueError("Does not make sense to factor (0)")
+
+        K = self.ring().number_field()
+        aOK = K.ideal(self.gens())
+        above = aOK.factor() # here we get the factorization in OK
+        # we now compute the intersection of each of those ideals with O
+        #
+        # see https://github.com/sagemath/sagetrac-mirror/compare/develop...u/klui/implement_picard_group_and_unit_group_for_non_maximal_orders
+        # and https://math.uni-paderborn.de/fileadmin-eim/mathematik/AG-Computeralgebra/Publications-klueners/picard.pdf
+        #
+        # to do that we compute the intersection of frak_p with O for each
+        # frak_p that appears in the factorization
+        #
+        # this, in turn, is achieved by computing the intersection of the
+        # lattices
+
 
 def _positive_sqrt(R, D):
     r"""
